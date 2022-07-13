@@ -1,26 +1,40 @@
-import Express from "express";
-import cors from "cors";
-import morgan from "morgan";
-import authRouter from "./routes/auth.js";
+const { PORT } = require("./config");
+const express = require("express");
+const cors = require("cors");
+const morgan = require("morgan");
+const security = require("./middleware/security");
+const authRoutes = require("./routes/auth");
+//const activityRoutes = require("./routes/activity");
+const nutritionRoutes = require("./routes/nutrition");
 
-//const express = require("express");
-const app = Express();
-const port = 3000;
+const { BadRequestError, NotFoundError } = require("./utils/errors");
 
-app.use("/auth", authRouter);
+const app = express();
+
 app.use(cors());
+app.use(express.json());
 app.use(morgan("tiny"));
-app.use(Express.json());
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
+app.use(security.extractUserFromJwt);
+
+app.use("/auth", authRoutes);
+//app.use("/activity", activityRoutes);
+app.use("/nutrition", nutritionRoutes);
+
+// 404 error handler
+app.use((req, res, next) => {
+  return next(new NotFoundError());
 });
 
-app.post("/", (req, res) => {
-  console.log(req.body);
-  res.send("Good post");
+// generic error handler
+app.use((err, req, res, next) => {
+  const status = err.status || 500;
+  const message = err.message;
+  return res.status(status).json({
+    error: { message, status },
+  });
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+app.listen(PORT, () => {
+  console.log(`Server running http://localhost:${PORT}`);
 });
