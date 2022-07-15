@@ -9,7 +9,6 @@ export default function Exercise() {
 
       <div className="exercise-area">
         <div className="title">
-          <h1>Overview</h1>
           <Link to="/exercise/create">Add Exercise</Link>
         </div>
         <br />

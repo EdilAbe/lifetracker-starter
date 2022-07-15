@@ -10,6 +10,7 @@
   top: 50px;
   height: 250px;
   width: 300px;
+  border-radius: 12px;
 }
 
 .hero {
@@ -26,14 +27,15 @@
   align-items: flex-start;
   max-width: 40%;
   position: relative;
+  font-size: 18px;
   left: 5%;
   top: 5%;
 }
 
 #landing-message {
-  font-family: "Lexend", sans-serif;
+  font-family: sans-serif;
   font-weight: 500;
-  font-size: 28px;
+  font-size: 22px;
   color: var(--secondary-dark);
   margin-bottom: 10px;
   line-height: 48px;
@@ -59,12 +61,14 @@
   align-items: center;
   justify-content: space-evenly;
   width: fit-content;
-  font-family: "Lexend", sans-serif;
+  font-family: sans-serif;
   font-weight: 300;
   font-size: 18px;
+  padding: 0px;
 }
 .img {
   height: 150px;
   width: 150px;
-  padding: 20px;
+  padding: 0px;
+  border-radius: 12px;
 }

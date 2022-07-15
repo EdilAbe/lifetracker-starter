@@ -1,14 +1,8 @@
-.Exercise .exercise-area {
-  margin: 20px 110px;
+.nutrition-feed .nutrition-feed-container {
+  margin: 10px 70px;
 }
 
-.Exercise .exercise-area .overview {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.Exercise .exercise-area .overview {
+.nutrition-feed .nutrition-feed-container .feed {
   background: radial-gradient(#ffff, #d9fffd);
   text-decoration: none;
   font-family: "Varela", serif;
@@ -19,8 +13,4 @@
   color: #2c4147;
   margin-left: 18px;
   transition: all 0.2s ease 0s;
-}
-
-.Exercise .exercise-area .title h1 {
-  font-size: 38px;
 }

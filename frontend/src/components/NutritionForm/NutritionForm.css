@@ -1,11 +1,11 @@
-.registration-form {
-  min-height: 600px;
+.nutrition-form {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
 }
 
-.registration-form .registration-card {
+.nutrition-form .nutrition-form-card {
   border: 1px solid rgb(202, 202, 202);
   border-radius: 10px;
   background: linear-gradient(64.7deg, #f8eef5, #d9fffd);
@@ -15,11 +15,11 @@
 
   display: flex;
   flex-direction: column;
-  min-height: 600px;
+  min-height: 500px;
   width: 520px;
 }
 
-.registration-form .registration-card .form .input-field {
+.nutrition-form .nutrition-form-card .form .input-field {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -27,7 +27,7 @@
   margin-top: 15px;
 }
 
-.registration-form .registration-card .form .split-input-field {
+.nutrition-form .nutrition-form-card .form .split-input-field {
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -35,7 +35,7 @@
   gap: 20px;
 }
 
-.registration-form .registration-card .form .input-field input {
+.nutrition-form .nutrition-form-card .form .input-field input {
   height: 50px;
   padding: 0 15px;
   font-size: 16px;
@@ -44,34 +44,20 @@
   margin-top: 5px;
   width: 100%;
   background: transparent;
-  color: var(--pure-white);
 }
 
-.registration-form .registration-card .error {
+.nutrition-form .nutrition-form-card .error {
   color: red;
 }
 
-.registration-form .registration-card .footer {
-  border-top: 1px solid black;
-  margin-top: 50px;
-  height: 90px;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.registration-form .registration-card .footer a {
-  color: rgb(96, 202, 218);
-}
-
-button {
+.nutrition-form .nutrition-form-card .form button {
   width: 100%;
   height: 50px;
   margin-top: 25px;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s ease 0s;
   border: 1px solid #00c98e;
   background-color: white;
-  font-size: 16px;
 }

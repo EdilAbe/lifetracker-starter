@@ -1,14 +1,10 @@
-.Sleep .Sleep-area {
-  margin: 20px 110px;
-}
-
-.Sleep .Sleep-area .overview {
-  background: radial-gradient(#ffff, #d9fffd);
+.nutrition-overview .button-container .record-nutrition-button {
+  background: radial-gradient(#ffff, #fff0eb);
   text-decoration: none;
   font-family: "Varela", serif;
-  font-size: 60px;
+  font-size: 17px;
   border-radius: 4px;
-  padding: 58px 214px;
+  padding: 8px 14px;
   border: 1px solid rgb(203, 203, 203);
   color: #2c4147;
   margin-left: 18px;

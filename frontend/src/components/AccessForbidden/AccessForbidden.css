@@ -1,0 +1,26 @@
+.access-forbidden {
+  overflow: hidden;
+  width: 50%;
+  display: flex;
+  gap: 20px;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin: 0 auto;
+  margin-top: var(--navbar-height);
+}
+
+.access-forbidden h1 {
+  font-family: "Lexend", sans-serif;
+}
+
+.access-forbidden-message {
+  line-height: 25px;
+  font-size: 22px;
+  font-weight: 200;
+  align-content: center;
+}
+
+.inline-link {
+  text-decoration: none;
+  color: rgb(9, 164, 188);
+}

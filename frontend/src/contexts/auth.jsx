@@ -1,7 +1,6 @@
 import * as React from "react";
 import { createContext, useContext, useState, useEffect } from "react";
 import ApiClient from "../services/ApiClient";
-import { useNutritionContext } from "./nutrition";
 
 export const AuthContext = createContext();
 
@@ -11,52 +10,62 @@ export function useAuthContext() {
 
 export const AuthContextProvider = ({ children }) => {
   // define your functions here
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [initialized, setInitialized] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [user, setUser] = useState({});
   const [error, setError] = useState({});
-  const variables = {
-    user,
-    setUser,
-    error,
-    setError,
-    isLoggedIn,
-    setIsLoggedIn,
-    loginUser,
-    logoutUser,
-  };
+  const [isAuthorized, setIsAuthorized] = React.useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
       const { data, error } = await ApiClient.fetchUserFromToken();
       console.log(data);
-      if (data) setUser(data.user);
+      if (data?.user) {
+        setUser(data.user);
+      }
       if (error) setError(error);
     };
 
     const token = localStorage.getItem("lifetracker_token");
     if (token) {
       ApiClient.setToken(token);
-      setIsLoggedIn(true);
+      setIsProcessing(true);
       fetchUser();
-      // fetchNutritions();
-      console.log("user", user);
     }
-  }, []);
+    setIsProcessing(false);
+    setInitialized(true);
+  }, [isAuthorized]);
 
   function logoutUser() {
+    setIsAuthorized(false);
     setUser({});
-    ApiClient.setToken("");
-    setIsLoggedIn(false);
-    console.log("user logged out");
+    ApiClient.logout();
   }
 
-  function loginUser(response) {
-    setIsLoggedIn(true);
-    setUser(response);
-    console.log("user", user.data);
-    console.log("user logged in");
-  }
+  const loginUser = async (credentials) => {
+    const { data, error } = await ApiClient.login(credentials);
+    console.log(data, error);
+    if (error) setError(error);
+    if (data?.user) {
+      ApiClient.setToken(data.token);
+      setIsAuthorized(true);
+    }
+  };
 
+  const variables = {
+    user,
+    setUser,
+    error,
+    initialized,
+    setInitialized,
+    setError,
+    isProcessing,
+    setIsProcessing,
+    isAuthorized,
+    setIsAuthorized,
+    loginUser,
+    logoutUser,
+  };
   return (
     <AuthContext.Provider value={variables}> {children}</AuthContext.Provider>
   );

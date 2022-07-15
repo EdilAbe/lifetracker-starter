@@ -1,11 +1,22 @@
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import "./NutritionForm.css";
+import apiClient from "../../services/apiClient";
+import UserHeader from "../UserHeader/UserHeader";
+import { useAuthContext } from "../../contexts/auth";
+import { useNutritionContext } from "../../contexts/nutrition";
 
 export default function NutritionForm() {
-  const navigate = useNavigate();
+  const authcont = useAuthContext();
 
-  const [errors, setErrors] = React.useState({});
+  const setErrors = authcont.setError;
+  const { isAuthorized, user, setUser, setIsAuthorized } = useAuthContext();
+
+  const navigate = useNavigate();
+  const { setIsLoading, isLoading, nutritions, setNutritions, setError } =
+    useNutritionContext();
+
+  // const [errors, setErrors] = React.useState({});
   const [form, setForm] = React.useState({
     name: "",
     calories: 1,
@@ -13,9 +24,14 @@ export default function NutritionForm() {
     category: "",
     quantity: 1,
   });
+  React.useEffect(() => {
+    if (user?.data?.nutrition) {
+      navigate("/nutrition");
+    }
+  }, [user, navigate]);
 
   const handleOnInputChange = (evt) => {
-    setError(null);
+    setErrors(null);
 
     if (evt.target.name === "name") {
       if (evt.target.value == "") {
@@ -55,18 +71,22 @@ export default function NutritionForm() {
     setForm((f) => ({ ...f, [evt.target.name]: evt.target.value }));
   };
 
-  const handleOnFormSubmit = (evt) => {
+  const handleOnFormSubmit = async (evt) => {
     evt.preventDefault();
     setErrors((e) => ({ ...e, form: null }));
-    // addNutrition(form)
-    addNutrition({
-      name: form.name,
-      calories: form.calories,
-      image_url: form.imageUrl,
-      category: form.category,
-      quantity: form.quantity,
-    });
-    navigate("/nutrition");
+
+    //const { data, error } = await apiClient.addNutrition(form);
+    const { data, error } = await apiClient.createNutrition(form);
+    console.log("Data", data);
+
+    if (error) {
+      setErrors((e) => ({ ...e, form: error }));
+    }
+    if (data?.user?.nutrition) {
+    }
+    if (data?.user?.nutrition) apiClient.setToken(data.token);
+    setNutritions(data?.user?.nutrition);
+    //navigate("/nutrition");
   };
 
   return (
@@ -86,7 +106,7 @@ export default function NutritionForm() {
               value={form.name}
               onChange={handleOnInputChange}
             />
-            {errors.name && <span className="error">{errors.name}</span>}
+            {/* {errors.name && <span className="error">{errors.name}</span>} */}
           </div>
 
           <div className="input-field">
@@ -98,9 +118,9 @@ export default function NutritionForm() {
               value={form.calories}
               onChange={handleOnInputChange}
             />
-            {errors.calories && (
+            {/* {errors.calories && (
               <span className="error">{errors.calories}</span>
-            )}
+            )} */}
           </div>
 
           <div className="input-field">
@@ -123,9 +143,9 @@ export default function NutritionForm() {
               value={form.category}
               onChange={handleOnInputChange}
             />
-            {errors.category && (
+            {/* {errors.category && (
               <span className="error">{errors.category}</span>
-            )}
+            )} */}
           </div>
 
           <div className="input-field">
@@ -137,16 +157,16 @@ export default function NutritionForm() {
               value={form.quantity}
               onChange={handleOnInputChange}
             />
-            {errors.quantity && (
+            {/* {errors.quantity && (
               <span className="error">{errors.quantity}</span>
-            )}
+            )} */}
           </div>
 
           <button
             className="submit-nutrition main-button"
             onClick={handleOnFormSubmit}
           >
-            Save
+            save{" "}
           </button>
         </form>
       </div>

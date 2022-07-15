@@ -9,7 +9,6 @@ export default function Sleep() {
 
       <div className="Sleep-area">
         <div className="title">
-          <h1>Overview</h1>
           <Link to="/sleep/log">Log Sleep</Link>
         </div>
         <br />

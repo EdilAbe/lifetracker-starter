@@ -2,13 +2,24 @@ import * as React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./LoginForm.css";
 import apiClient from "../../services/apiClient";
+import { useAuthContext } from "../../contexts/auth";
+import { useState } from "react";
 
 export default function LoginForm() {
-  const [errors, setErrors] = React.useState({});
+  const authcont = useAuthContext();
+  //const loginUser = authcont.loginUser;
+  //const { user, setUser } = React.useState({});
+  const setErrors = authcont.setError;
+
   const [form, setForm] = React.useState({ email: "", password: "" });
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = React.useState(false);
-  const { setInitialized, setUser, setIsAuthorized } = useAuthContext;
+  const { isAuthorized, user, setUser, setIsAuthorized } = useAuthContext();
+
+  React.useEffect(() => {
+    if (user?.email) {
+      navigate("/activity");
+    }
+  }, [user, navigate]);
 
   const handleOnInputChange = (evt) => {
     // check if email is valid
@@ -32,27 +43,20 @@ export default function LoginForm() {
 
   const handleOnFormSubmit = async (evt) => {
     evt.preventDefault();
-
-    setIsLoading(true);
+    // setIsAuthorized(false);
     setErrors((e) => ({ ...e, form: null }));
 
-    const { data, error } = await apiClient.loginUser({
-      email: form.email,
-      password: form.password,
-    });
+    const { data, error } = await apiClient.login(form);
+    console.log("Data", data);
+    console.log("Error", error);
     if (error) {
       setErrors((e) => ({ ...e, form: error }));
-      setIsLoading(false);
     }
-    if (data?.user) {
-      setInitialized(data);
-      setUser(data.user);
-      setIsAuthorized(true);
-      apiClient.setToken(data.token);
+    if (data?.user) apiClient.setToken(data.token);
+    setUser(data.user);
+    // setIsAuthorized(true);
 
-      navigate("/activity");
-      setIsLoading(false);
-    }
+    // navigate("/activity");
   };
 
   return (
@@ -72,7 +76,7 @@ export default function LoginForm() {
               value={form.email}
               onChange={handleOnInputChange}
             />
-            {errors.email && <span className="error">{errors.email}</span>}
+            {/* {errors.email && <span className="error">{errors.email}</span>} */}
           </div>
 
           <div className="input-field">
@@ -84,16 +88,16 @@ export default function LoginForm() {
               value={form.password}
               onChange={handleOnInputChange}
             />
-            {errors.password && (
+            {/* {errors.password && (
               <span className="error">{errors.password}</span>
-            )}
+            )} */}
           </div>
 
           <button
             className="submit-login main-button"
             onClick={handleOnFormSubmit}
           >
-            {isLoading ? "Loading" : "Log In"}
+            Log in
           </button>
         </form>
 

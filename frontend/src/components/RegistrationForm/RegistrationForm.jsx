@@ -1,10 +1,17 @@
 import * as React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import apiClient from "../../services/apiClient";
+import { useAuthContext } from "../../contexts/auth";
+import { useState, useContext } from "react";
+import "./RegistrationForm.css";
 
 export default function RegistrationForm() {
   const navigate = useNavigate();
-  const [errors, setErrors] = useState({});
+  const authCont = useAuthContext();
+  const login = authCont.loginUser;
+  const setErrors = authCont.setError;
+  const setUser = authCont.setUser;
+
   const [form, setForm] = React.useState({
     email: "",
     username: "",
@@ -13,13 +20,6 @@ export default function RegistrationForm() {
     password: "",
     passwordConfirm: "",
   });
-  const {
-    setInitialized,
-    setUser,
-    setIsAuthorized,
-    isProcessing,
-    setIsProcessing,
-  } = useAuthContext;
 
   const handleOnInputChange = (event) => {
     if (event.target.name === "email") {
@@ -70,38 +70,18 @@ export default function RegistrationForm() {
     setForm((f) => ({ ...f, [event.target.name]: event.target.value }));
   };
 
-  const handleOnFormSubmit = async (event) => {
-    //setIsProcessing(true);
+  const handleOnFormSubmit = async () => {
     setErrors((e) => ({ ...e, form: null }));
 
-    if (form.passwordConfirm !== form.password) {
-      setErrors((e) => ({ ...e, passwordConfirm: "Passwords do not match." }));
-      //setIsProcessing(false);
-      return;
-    } else {
-      setErrors((e) => ({ ...e, passwordConfirm: null }));
-    }
-
-    const { data, error } = await apiClient.signup({
-      email: form.email,
-      password: form.password,
-      firstName: form.firstName,
-      lastName: form.lastName,
-      username: form.username,
-    });
+    const { data, error } = await apiClient.signup(form);
     if (error) {
       setErrors((e) => ({ ...e, form: error }));
-      // setIsProcessing(false);
     }
     if (data?.user) {
-      setInitialized(data);
       setUser(data.user);
-      setIsAuthorized(true);
       apiClient.setToken(data.token);
-
-      navigate("/activity");
-      // setIsProcessing(false);
     }
+    navigate("/activity");
   };
 
   return (
@@ -112,7 +92,7 @@ export default function RegistrationForm() {
         <form className="form">
           {/* {error.form && <span className="error">{error.form}</span>} */}
           <div className="input-field">
-            <label for="email">Email</label>
+            <label forhtml="email">Email</label>
             <input
               className="form-input"
               name="email"
@@ -125,7 +105,7 @@ export default function RegistrationForm() {
           </div>
 
           <div className="input-field">
-            <label for="username">Username</label>
+            <label forhtml="username">Username</label>
             <input
               className="form-input"
               name="username"
@@ -168,7 +148,7 @@ export default function RegistrationForm() {
           </div>
 
           <div className="input-field">
-            <label for="password">Password</label>
+            <label htmlfor="password">Password</label>
             <input
               className="form-input"
               name="password"
@@ -181,7 +161,7 @@ export default function RegistrationForm() {
           </div>
 
           <div className="input-field">
-            <label for="passwordConfirm">Confirm Password</label>
+            <label htmlfor="passwordConfirm">Confirm Password</label>
             <input
               className="form-input"
               name="passwordConfirm"
@@ -200,7 +180,7 @@ export default function RegistrationForm() {
           className="submit-registration main-button"
           onClick={handleOnFormSubmit}
         >
-          {isProcessing ? "Loading" : "Create Account"}
+          Create Account
         </button>
         <div className="footer">
           <p>

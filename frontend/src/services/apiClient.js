@@ -19,47 +19,42 @@ class ApiClient {
       "Content-Type": "application/json",
     };
 
-    if (this.token) {
-      headers["Authorization"] = `Bearer ${this.token}`;
-    }
+    if (this.token) headers["Authorization"] = `Bearer ${this.token}`;
 
     try {
       const res = await axios({ url, method, data, headers });
+      console.log();
       return { data: res.data, error: null };
     } catch (error) {
+      console.error({ errorResponse: error.response });
       const message = error?.response?.data?.error?.message;
       return { data: null, error: message || String(error) };
     }
   }
 
-  // login
   async login(credentials) {
-    // use request method to send http request to auth/login endpoint
+    console.log("url", this.remoteHostUrl);
     return await this.request({
-      endpoint: "auth/login",
-      method: "POST",
+      endpoint: `auth/login`,
+      method: `POST`,
       data: credentials,
     });
   }
-
   async signup(credentials) {
     return await this.request({
-      endpoint: "auth/register",
-      method: "POST",
+      endpoint: `auth/register`,
+      method: `POST`,
       data: credentials,
     });
   }
-
   async logout() {
     this.setToken(null);
-    localStorage.removeItem(this.tokenName);
+    localStorage.setItem(this.tokenName, "");
   }
 
   async fetchUserFromToken() {
     return await this.request({ endpoint: "auth/me", method: "GET" });
   }
-
-  // nutririon
 
   async fetchNutritionForUser() {
     return await this.request({ endpoint: "nutrition/", method: "GET" });
@@ -79,6 +74,9 @@ class ApiClient {
       method: "GET",
     });
   }
-}
 
+  async calculateSummaryStats() {
+    return await this.request({ endpoint: "activity/", method: "GET" });
+  }
+}
 export default new ApiClient(API_BASE_URL || "http://localhost:3001");

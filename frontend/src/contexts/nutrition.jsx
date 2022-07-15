@@ -10,8 +10,8 @@ export function useNutritionContext() {
 }
 
 export const NutritionContextProvider = ({ children }) => {
-  const globals = useAuthContext();
-  const isLoggedIn = globals.isLoggedIn;
+  const authcon = useAuthContext();
+  const isAuthorized = authcon.isAuthorized;
 
   const [nutritions, setNutritions] = useState([]);
   const [initialized, setInitialized] = useState();
@@ -20,7 +20,7 @@ export const NutritionContextProvider = ({ children }) => {
 
   useEffect(() => {
     const fetchNutritions = async () => {
-      const { data, error } = await ApiClient.getNutritions();
+      const { data, error } = await ApiClient.calculateSummaryStats();
       if (data) setNutritions(data.nutritions);
       if (error) setError(error);
       setIsLoading(false);
@@ -35,11 +35,11 @@ export const NutritionContextProvider = ({ children }) => {
   return (
     <NutritionContext.Provider
       value={{
-        isLoading,
         setIsLoading,
+        isLoading,
         nutritions,
         setNutritions,
-        isLoggedIn,
+        isAuthorized,
         setError,
       }}
     >

@@ -1,0 +1,114 @@
+.activity-feed .activity-area {
+  margin: 10px 70px;
+}
+
+.activity-feed .activity-area .title {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.activity-feed .activity-area .title h1 {
+  font-size: 24px;
+}
+
+.activity-feed .activity-area .title h4 {
+  font-size: 30px;
+}
+
+.activity-feed .activity-area .title a {
+  font-family: "Varela", serif;
+  font-size: 17px;
+  border-radius: 4px;
+  padding: 8px 14px;
+  border: 1px solid rgb(203, 203, 203);
+  color: #2c4147;
+  margin-left: 18px;
+  transition: all 0.2s ease 0s;
+}
+
+.activity-feed .activity-area .title .addLinks {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.activity-feed .activity-area .title .addLinks .exercise {
+  background: radial-gradient(#ffff, #d9fffd);
+  text-decoration: none;
+}
+
+.activity-feed .activity-area .title .addLinks .nutrition {
+  background: radial-gradient(#ffff, #fff0eb);
+  text-decoration: none;
+}
+
+.activity-feed .activity-area .title .addLinks .sleep {
+  background: radial-gradient(#ffff, #d3e3fc);
+  text-decoration: none;
+}
+
+.activity-feed .per-category {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+.activity-feed .per-day {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.activity-feed .sumCard {
+  margin: 20px;
+  padding: 23px;
+  width: 200px;
+  min-height: 180px;
+  display: grid;
+  grid-template-rows: 5px 5px 8px 8px;
+  border-radius: 10px;
+  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.25);
+  font-family: sans-serif;
+}
+
+.activity-feed .sumCard.exercise,
+.per-day .sumCard2.exercise {
+  background: linear-gradient(64.7deg, #e397d3, #d9fffd);
+}
+
+.activity-feed .sumCard.nutrition,
+.per-day .sumCard2.nutrition {
+  background: linear-gradient(64.7deg, #7bd2e3, #fff0eb);
+}
+
+.activity-feed .sumCard.sleep,
+.per-day .sumCard2.sleep {
+  background: linear-gradient(64.7deg, #d2a1e7, #d3e3fc);
+}
+
+.activity-feed .sumCard .valueName {
+  grid-row: 1;
+  font-size: 20px;
+}
+
+.activity-feed .sumCard .value {
+  grid-row: 4/5;
+  font-size: 45px;
+}
+
+.activity-feed .sumCard2 {
+  margin: 20px;
+  padding: 23px;
+  width: 200px;
+  min-height: 180px;
+  display: grid;
+  grid-template-rows: 5px 5px 8px 8px;
+  border-radius: 10px;
+  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.25);
+  font-family: sans-serif;
+}
+
+.activity-feed .sumCard2 .valueName {
+  grid-row: 2/3;
+  font-size: 19px;
+}
