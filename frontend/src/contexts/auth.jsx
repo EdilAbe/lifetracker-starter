@@ -1,95 +1,63 @@
 import * as React from "react";
-import ApiClient from "../services/apiClient";
+import { createContext, useContext, useState, useEffect } from "react";
+import ApiClient from "../services/ApiClient";
+import { useNutritionContext } from "./nutrition";
 
-const AuthContext = React.createContext();
+export const AuthContext = createContext();
 
-export function AuthContextProvider({ children }) {
-  const [user, setUser] = React.useState({});
-  const [initialized, setInitialized] = React.useState(false);
-  const [isProcessing, setIsProcessing] = React.useState(false);
-  const [error, setError] = React.useState(null);
-  const [isAuthorized, setIsAuthorized] = React.useState(false);
+export function useAuthContext() {
+  return useContext(AuthContext);
+}
 
-  React.useEffect(() => {
+export const AuthContextProvider = ({ children }) => {
+  // define your functions here
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState({});
+  const [error, setError] = useState({});
+  const variables = {
+    user,
+    setUser,
+    error,
+    setError,
+    isLoggedIn,
+    setIsLoggedIn,
+    loginUser,
+    logoutUser,
+  };
+
+  useEffect(() => {
     const fetchUser = async () => {
       const { data, error } = await ApiClient.fetchUserFromToken();
-      if (data?.user) {
-        setUser(data.user);
-        setError(null);
-      }
+      console.log(data);
+      if (data) setUser(data.user);
       if (error) setError(error);
     };
 
     const token = localStorage.getItem("lifetracker_token");
     if (token) {
       ApiClient.setToken(token);
-      setIsProcessing(true);
-      setError(null);
+      setIsLoggedIn(true);
       fetchUser();
+      // fetchNutritions();
+      console.log("user", user);
     }
-    setIsProcessing(false);
-    setInitialized(true);
-  }, [isAuthorized]);
+  }, []);
 
-  const loginUser = async (credentials) => {
-    const { data, error } = await ApiClient.login(credentials);
-    console.log(data, error);
-    if (error) setError(error);
-    if (data?.user) {
-      ApiClient.setToken(data.token);
-      setIsAuthorized(true);
-    }
-  };
-
-  const signupUser = async (credentials) => {
-    const { data, error } = await ApiClient.signup(credentials);
-    if (error) setError(error);
-    if (data?.user) {
-      ApiClient.setToken(data.token);
-      setIsAuthorized(true);
-    }
-  };
-  const fetchAuthedUser= async () => {
-    const { data, error } = await ApiClient.fetchUserFromToken();
-    if (error) setError(error);
-    if (data?.user) {
-      ApiClient.setToken(data.token);
-      setIsAuthorized(true);
-    }
-  };
-
-  const logoutUser = async () => {
-    setIsAuthorized(false);
+  function logoutUser() {
     setUser({});
-    setError(null);
-    await ApiClient.logout();
-  };
+    ApiClient.setToken("");
+    setIsLoggedIn(false);
+    console.log("user logged out");
+  }
+
+  function loginUser(response) {
+    setIsLoggedIn(true);
+    setUser(response);
+    console.log("user", user.data);
+    console.log("user logged in");
+  }
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        setUser,
-        initialized,
-        setInitialized,
-        isProcessing,
-        setIsProcessing,
-        error,
-        setError,
-        loginUser,
-        signupUser,
-        logoutUser,
-        isAuthorized,
-        setIsAuthorized,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={variables}> {children}</AuthContext.Provider>
   );
-}
-
-export const useAuthContext = () => {
-  return React.useContext(AuthContext);
 };
-
-export default AuthContext;

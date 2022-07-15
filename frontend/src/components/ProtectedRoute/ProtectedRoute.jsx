@@ -1,12 +1,11 @@
-//import * as React from "react";
-import { useAuthContext } from "../../contexts/auth";
+import * as React from "react";
+import AccessForbidden from "../AccessForbidden/AccessForbidden";
+import "./ProtectedRoute.css";
 
 export default function ProtectedRoute({ element }) {
-  const { initialized, user } = useAuthContext();
-
   if (initialized && user?.email) {
     return element;
   } else {
-    return "access not granted";
+    return <AccessForbidden />;
   }
 }

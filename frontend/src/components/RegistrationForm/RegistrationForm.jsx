@@ -1,19 +1,10 @@
 import * as React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import apiClient from "../../services/apiClient";
-import { useAuthContext } from "../../contexts/auth";
 
 export default function RegistrationForm() {
-  const {
-    setUser,
-    user,
-    error,
-    setError,
-    isProcessing,
-    setIsProcessing,
-    signupUser,
-  } = useAuthContext();
   const navigate = useNavigate();
+  const [errors, setErrors] = useState({});
   const [form, setForm] = React.useState({
     email: "",
     username: "",
@@ -22,91 +13,76 @@ export default function RegistrationForm() {
     password: "",
     passwordConfirm: "",
   });
+  const {
+    setInitialized,
+    setUser,
+    setIsAuthorized,
+    isProcessing,
+    setIsProcessing,
+  } = useAuthContext;
 
-  const validateFields = (event) => {
-    if (event.target.name === "password") {
-      if (form.passwordConfirm && form.passwordConfirm !== event.target.value) {
-        setError((e) => ({ ...e, passwordConfirm: "Passwords don't match" }));
-      } else {
-        setError((e) => ({ ...e, passwordConfirm: null }));
-      }
-    }
-    // confirming password
-    if (event.target.name === "passwordConfirm") {
-      if (form.password && form.password !== event.target.value) {
-        setError((e) => ({ ...e, passwordConfirm: "Passwords don't match" }));
-      } else {
-        setError((e) => ({ ...e, passwordConfirm: null }));
-      }
-    }
+  const handleOnInputChange = (event) => {
     if (event.target.name === "email") {
       if (event.target.value.indexOf("@") === -1) {
-        setError((e) => ({ ...e, email: "Please enter a valid email." }));
+        setErrors((e) => ({ ...e, email: "Please enter a valid email." }));
       } else {
-        setError((e) => ({ ...e, email: null }));
+        setErrors((e) => ({ ...e, email: null }));
       }
     }
 
     if (event.target.name === "lastName") {
       if (event.target.value.length === 0) {
-        setError((e) => ({ ...e, lastName: "Please enter your last name." }));
+        setErrors((e) => ({ ...e, lastName: "Please enter your last name." }));
       } else {
-        setError((e) => ({ ...e, lastName: null }));
+        setErrors((e) => ({ ...e, lastName: null }));
       }
     }
 
     if (event.target.name === "username") {
       if (event.target.value.length === 0) {
-        setError((e) => ({ ...e, username: "Please enter your username." }));
+        setErrors((e) => ({ ...e, username: "Please enter your username." }));
       } else {
-        setError((e) => ({ ...e, username: null }));
+        setErrors((e) => ({ ...e, username: null }));
       }
     }
 
     if (event.target.name === "password") {
       if (form.passwordConfirm && form.passwordConfirm !== event.target.value) {
-        setError((e) => ({
+        setErrors((e) => ({
           ...e,
           passwordConfirm: "Password's do not match",
         }));
       } else {
-        setError((e) => ({ ...e, passwordConfirm: null }));
+        setErrors((e) => ({ ...e, passwordConfirm: null }));
       }
     }
     if (event.target.name === "passwordConfirm") {
       if (form.password && form.password !== event.target.value) {
-        setError((e) => ({
+        setErrors((e) => ({
           ...e,
           passwordConfirm: "Password's do not match",
         }));
       } else {
-        setError((e) => ({ ...e, passwordConfirm: null }));
+        setErrors((e) => ({ ...e, passwordConfirm: null }));
       }
     }
-  };
 
-  const handleOnInputChange = (event) => {
-    // checking if password and passwordConfirm match
-    validateFields(event);
     setForm((f) => ({ ...f, [event.target.name]: event.target.value }));
   };
 
   const handleOnFormSubmit = async (event) => {
-    setIsProcessing(true);
-    setError((e) => ({ ...e, form: null }));
+    //setIsProcessing(true);
+    setErrors((e) => ({ ...e, form: null }));
 
-    if (event.target.name === "password") {
-      if (form.passwordConfirm && form.passwordConfirm !== event.target.value) {
-        setError((e) => ({
-          ...e,
-          passwordConfirm: "Password's do not match",
-        }));
-      } else {
-        setError((e) => ({ ...e, passwordConfirm: null }));
-      }
+    if (form.passwordConfirm !== form.password) {
+      setErrors((e) => ({ ...e, passwordConfirm: "Passwords do not match." }));
+      //setIsProcessing(false);
+      return;
+    } else {
+      setErrors((e) => ({ ...e, passwordConfirm: null }));
     }
 
-    const { data, error } = await apiClient.signupUser({
+    const { data, error } = await apiClient.signup({
       email: form.email,
       password: form.password,
       firstName: form.firstName,
@@ -114,15 +90,17 @@ export default function RegistrationForm() {
       username: form.username,
     });
     if (error) {
-      setError((e) => ({ ...e, form: error }));
-      setIsProcessing(false);
+      setErrors((e) => ({ ...e, form: error }));
+      // setIsProcessing(false);
     }
     if (data?.user) {
-      setUser(data.user.firstName);
+      setInitialized(data);
+      setUser(data.user);
+      setIsAuthorized(true);
+      apiClient.setToken(data.token);
 
       navigate("/activity");
-      setIsProcessing(false);
-      apiClient.setToken(data.token);
+      // setIsProcessing(false);
     }
   };
 

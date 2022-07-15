@@ -1,67 +1,50 @@
 import * as React from "react";
-import ApiClient from "../services/apiClient";
+import { createContext, useContext, useState, useEffect } from "react";
+import ApiClient from "../services/ApiClient";
 import { useAuthContext } from "./auth";
 
-const NutritionContext = React.createContext();
+export const NutritionContext = createContext();
 
-export function NutritionContextProvider({ children }) {
-  const [nutritions, setNutritions] = React.useState([]);
-  const [initialized, setInitialized] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [error, setError] = React.useState(null);
-  const [addedNutrition, setaddedNutrition] = React.useState(false);
+export function useNutritionContext() {
+  return useContext(NutritionContext);
+}
 
-  const { user } = useAuthContext();
+export const NutritionContextProvider = ({ children }) => {
+  const globals = useAuthContext();
+  const isLoggedIn = globals.isLoggedIn;
 
-  React.useEffect(() => {
-    const fetchNutrition = async () => {
-      const { data, error } = await ApiClient.fetchNutritionForUser();
-      console.log("nutritions data in nutrition context:", data);
-      if (data?.nutritions) {
-        setNutritions([...data.nutritions]);
-        console.log(nutritions);
-        setError(null);
-      }
+  const [nutritions, setNutritions] = useState([]);
+  const [initialized, setInitialized] = useState();
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState();
+
+  useEffect(() => {
+    const fetchNutritions = async () => {
+      const { data, error } = await ApiClient.getNutritions();
+      if (data) setNutritions(data.nutritions);
       if (error) setError(error);
+      setIsLoading(false);
     };
 
-    if (user?.email) {
-      setIsLoading(true);
-      setError(null);
-      fetchNutrition();
+    if (isLoading) {
+      fetchNutritions();
+      console.log("nutritions", nutritions);
     }
-    setIsLoading(false);
-    setInitialized(true);
-  }, [addedNutrition]);
-
-  const addNutrition = async (nutritionForm) => {
-    const { data, error } = await ApiClient.createNutrition(nutritionForm);
-    console.log("Added nutrition data is:", data);
-    if (error) setError(error);
-    if (data) setaddedNutrition(true);
-  };
+  }, []);
 
   return (
     <NutritionContext.Provider
       value={{
-        nutritions,
-        setNutritions,
-        initialized,
-        setInitialized,
         isLoading,
         setIsLoading,
-        error,
+        nutritions,
+        setNutritions,
+        isLoggedIn,
         setError,
-        addedNutrition,
-        setaddedNutrition,
-        addNutrition,
       }}
     >
-      {children}
+      {" "}
+      {children}{" "}
     </NutritionContext.Provider>
   );
-}
-
-export const useNutritionContext = () => {
-  return React.useContext(NutritionContext);
 };

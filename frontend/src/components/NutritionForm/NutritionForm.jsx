@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
-import { useNutritionContext } from "../../contexts/nutrition";
 import "./NutritionForm.css";
 
 export default function NutritionForm() {
@@ -14,8 +13,6 @@ export default function NutritionForm() {
     category: "",
     quantity: 1,
   });
-
-  const { error, setError, addNutrition } = useNutritionContext();
 
   const handleOnInputChange = (evt) => {
     setError(null);

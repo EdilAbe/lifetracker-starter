@@ -8,10 +8,10 @@ export default function LoginForm() {
   const [form, setForm] = React.useState({ email: "", password: "" });
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = React.useState(false);
+  const { setInitialized, setUser, setIsAuthorized } = useAuthContext;
 
   const handleOnInputChange = (evt) => {
     // check if email is valid
-    setError(null);
     if (evt.target.name === "email") {
       if (evt.target.value.indexOf("@") === -1) {
         setErrors((e) => ({ ...e, email: "Please enter a valid email" }));
@@ -31,6 +31,8 @@ export default function LoginForm() {
   };
 
   const handleOnFormSubmit = async (evt) => {
+    evt.preventDefault();
+
     setIsLoading(true);
     setErrors((e) => ({ ...e, form: null }));
 
@@ -43,11 +45,13 @@ export default function LoginForm() {
       setIsLoading(false);
     }
     if (data?.user) {
-      setName(data.user.firstName);
+      setInitialized(data);
+      setUser(data.user);
+      setIsAuthorized(true);
+      apiClient.setToken(data.token);
 
       navigate("/activity");
       setIsLoading(false);
-      apiClient.setToken(data.token);
     }
   };
 
