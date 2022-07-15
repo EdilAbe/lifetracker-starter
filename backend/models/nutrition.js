@@ -4,7 +4,13 @@ const { UnauthorizedError, BadRequestError } = require("../utils/errors");
 class Nutrition {
   static async createNutrition({ nutritionForm, userId }) {
     // throw error if any credential fields are missing
-    const requiredFields = ["name", "category", "calories", "image_url"];
+    const requiredFields = [
+      "name",
+      "category",
+      "calories",
+      "quantity",
+      "image_url",
+    ];
 
     requiredFields.forEach((field) => {
       if (!nutritionForm.hasOwnProperty(field)) {
@@ -12,7 +18,7 @@ class Nutrition {
       }
     });
 
-    // const quantity = nutritionForm?.quantity || 1;
+    const quantity = nutritionForm?.quantity || 1;
 
     // create a new nutrition for the user
     const result = await db.query(
@@ -31,7 +37,7 @@ class Nutrition {
       [
         nutritionForm.name,
         nutritionForm.category,
-        // quantity,
+        quantity,
         nutritionForm.calories,
         nutritionForm.image_url,
         userId,
