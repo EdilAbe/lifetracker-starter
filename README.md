@@ -43,6 +43,7 @@ Implement any of the following features to improve the application:
 ### Walkthrough Video
 
 ![](https://github.com/EdilAbe/lifetracker-starter/blob/main/walkthrough3.gif)
+![](https://github.com/EdilAbe/lifetracker-starter/blob/main/walkthrough4.gif)
 
 `TODO://` Add the embedded URL code to your animated app walkthrough below, `ADD_EMBEDDED_CODE_HERE`. Make sure the video or gif actually renders and animates when viewing this README. (🚫 Remove this paragraph after adding walkthrough video)
 
