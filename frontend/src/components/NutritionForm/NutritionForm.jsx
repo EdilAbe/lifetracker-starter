@@ -13,8 +13,14 @@ export default function NutritionForm() {
   const { isAuthorized, user, setUser, setIsAuthorized } = useAuthContext();
 
   const navigate = useNavigate();
-  const { setIsLoading, isLoading, nutritions, setNutritions, setError } =
-    useNutritionContext();
+  const {
+    setIsLoading,
+    isLoading,
+    nutritions,
+    setNutritions,
+    addNutrition,
+    setError,
+  } = useNutritionContext();
 
   // const [errors, setErrors] = React.useState({});
   const [form, setForm] = React.useState({
@@ -71,22 +77,13 @@ export default function NutritionForm() {
     setForm((f) => ({ ...f, [evt.target.name]: evt.target.value }));
   };
 
-  const handleOnFormSubmit = async (evt) => {
+  const handleOnFormSubmit = (evt) => {
     evt.preventDefault();
     setErrors((e) => ({ ...e, form: null }));
 
     //const { data, error } = await apiClient.addNutrition(form);
-    const { data, error } = await apiClient.createNutrition(form);
-    console.log("Data", data);
-
-    if (error) {
-      setErrors((e) => ({ ...e, form: error }));
-    }
-    if (data?.user?.nutrition) {
-    }
-    if (data?.user?.nutrition) apiClient.setToken(data.token);
-    setNutritions(data?.user?.nutrition);
-    //navigate("/nutrition");
+    addNutrition(form);
+    navigate("/nutrition");
   };
 
   return (

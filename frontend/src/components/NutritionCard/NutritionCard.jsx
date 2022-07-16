@@ -15,7 +15,7 @@ export default function NutritionCard({
   const isImage = imageUrl.trim() !== "";
   return (
     <div className="nutrition-card">
-      <div className="el-1">
+      <div className="nutrition-info">
         {/* {isImage && <img src={imageUrl} alt={name} className="nutrition-image"/>} */}
         {isImage ? (
           <img src={imageUrl} alt={name} className="nutrition-image" />

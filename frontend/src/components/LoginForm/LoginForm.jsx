@@ -13,7 +13,7 @@ export default function LoginForm() {
 
   const [form, setForm] = React.useState({ email: "", password: "" });
   const navigate = useNavigate();
-  const { isAuthorized, user, setUser, setIsAuthorized } = useAuthContext();
+  const { isAuthorized, user, setUser, setIsAuthorizd } = useAuthContext();
 
   React.useEffect(() => {
     if (user?.email) {

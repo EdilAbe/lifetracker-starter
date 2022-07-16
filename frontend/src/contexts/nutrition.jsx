@@ -17,10 +17,13 @@ export const NutritionContextProvider = ({ children }) => {
   const [initialized, setInitialized] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState();
+  const [receivedNewNutrition, setReceivedNewNutrition] = React.useState(false);
+
+  const { user } = useAuthContext();
 
   useEffect(() => {
     const fetchNutritions = async () => {
-      const { data, error } = await ApiClient.calculateSummaryStats();
+      const { data, error } = await ApiClient.fetchNutritionForUser();
       if (data) setNutritions(data.nutritions);
       if (error) setError(error);
       setIsLoading(false);
@@ -30,17 +33,26 @@ export const NutritionContextProvider = ({ children }) => {
       fetchNutritions();
       console.log("nutritions", nutritions);
     }
-  }, []);
+  }, [receivedNewNutrition]);
+  const addNutrition = async (nutritionForm) => {
+    const { data, error } = await ApiClient.createNutrition(nutritionForm);
+
+    if (error) setError(error);
+    if (data) setReceivedNewNutrition(true);
+  };
 
   return (
     <NutritionContext.Provider
       value={{
         setIsLoading,
         isLoading,
+        addNutrition,
         nutritions,
         setNutritions,
         isAuthorized,
         setError,
+        receivedNewNutrition,
+        setReceivedNewNutrition,
       }}
     >
       {" "}
